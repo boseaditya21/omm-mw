@@ -13,6 +13,8 @@ export default ({ config, db }) => {
 
 	// perhaps expose some API metadata at the root
 	api.get('/', (req, res) => {
+		console.log('Before Version');
+		
 		res.json({ version });
 	});
 
@@ -30,24 +32,19 @@ export default ({ config, db }) => {
 
 	api.post('/authenticate', function(req, res) {
 
-		var user = { 
-		name: 'Nick', 
-		password: 'password',
-		admin: true 
-	};
-
-	if (!user) {
-			res.json({ success: false, message: 'Authentication failed. User not found.' });
-		} else if (user) {
-
+	
+	console.log('Before User Login');
+		if(req && req.body && req.body.email && req.body.password){
+			var promise = sfCalls.loginUser(req.body.email).then(function (pass) {
+			console.log(pass);
 			// check if password matches
-			if (user.password != req.body.password) {
+			if (pass != req.body.password) {
 				res.json({ success: false, message: 'Authentication failed. Wrong password.' });
 			} else {
 
 				// if user is found and password is right
 				// create a token
-				var token = jwt.sign(user, config.secret, {
+				var token = jwt.sign(req.body, config.secret, {
 					expiresIn: 10800 // expires in 3 hours
 				});
 
@@ -56,9 +53,16 @@ export default ({ config, db }) => {
 					message: 'Enjoy your token!',
 					token: token
 				});
-			}		
-
+			}
+			
+		},
+		function (str) {
+			res.json({ success: false, message: 'Authentication failed. User not found.' });
+		});
+		}else{
+			res.json({ success: false, message: 'Username & password is required to login' });
 		}
+		
 });
 
 // ---------------------------------------------------------
