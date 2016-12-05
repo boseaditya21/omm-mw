@@ -1,7 +1,7 @@
 
 # clone it
-https://gitlab.com/glen/easicash-middleware.git
-cd easicash-middleware
+https://github.com/CloudKaptan/omm-mw
+cd omm-mw
 
 # Install dependencies
 npm install
