@@ -29,11 +29,36 @@ export default ({ config, db }) => {
 		});
 		
 	});
+	api.post('/register',(req,res)=>{
+	console.log('Before insertion');
+	//console.log(req);
+		if(req && req.body){
+			
+			var promise = sfCalls.newUser(req.body.lastname,req.body.firstname,req.body.middlename,
+				req.body.email,req.body.phone,req.body.password,
+				req.body.confirmpassword,req.body.securityQues,
+				req.body.securityAns).then(function (data) {
+			 
+			console.log(res.json);
+
+				res.json({
+					success: true,
+					message: data
+				});
+			}
+			,
+
+		function (str) {
+			res.json({ success: false, message: 'ERROR..' });
+		});
+		}
+});
 
 	api.post('/authenticate', function(req, res) {
 
 	
 	console.log('Before User Login');
+	console.log(req);
 		if(req && req.body && req.body.email && req.body.password){
 			var promise = sfCalls.loginUser(req.body.email).then(function (pass) {
 			console.log(pass);
@@ -60,6 +85,7 @@ export default ({ config, db }) => {
 			res.json({ success: false, message: 'Authentication failed. User not found.' });
 		});
 		}else{
+
 			res.json({ success: false, message: 'Username & password is required to login' });
 		}
 		
@@ -124,5 +150,21 @@ api.use(function(req, res, next) {
 
 	});
 
+
 	return api;
 }
+
+
+/*
+
+"lastname":"Maharana",
+"firstname":"Priyanka",
+"middlename": ""
+"email":"priya@gmail.com",
+"phone":"893735553"
+"password":"cse",
+"confirmpassword":"cse",
+"securityQues":"Capital of India?",
+"securityAns":"Delhi"
+
+*/

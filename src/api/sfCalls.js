@@ -5,6 +5,7 @@ var nforce = require('nforce');
 var org = {};
 
 var restClient = {
+	
 	login(){
 
   var promise = new Promise(function (resolve, reject) {
@@ -64,7 +65,6 @@ var restClient = {
 
 		});
 		return promise;
-
 		
 	}
 
@@ -103,7 +103,39 @@ var restClient = {
 		return promise;
 
 		
-	}
+	},
 
+	newUser(lastname,firstname,middlename,email,phone,password,confirmpassword,securityQues,securityAns){
+		console.log('hellooo');
+		var promise=new Promise(function(resolve,reject)
+		{
+			var acc = nforce.createSObject('Account');
+
+			acc.set('Last_Name__c',lastname);
+			acc.set('First_Name_joint__c',firstname);
+			acc.set('Middle_Name_optional__c',middlename);
+			acc.set('Name',firstname+' '+middlename+' '+lastname);
+			acc.set('Email_Address__c',email);
+			acc.set('Phone_joint__c',phone);
+			acc.set('peer__Password__c',password);
+			acc.set('Confirm_Password__c',confirmpassword);
+			acc.set('Security_Question__c',securityQues);
+			acc.set('Security_Answer__c',securityAns);
+			console.log(acc);
+
+			org.insert({ sobject: acc}, function(err, resp)
+			{
+				console.log(err);
+				console.log(resp);
+			  	if(!err) {console.log('Registered..');
+			  	resolve('Registered');
+			 }
+			  	else
+			  		reject("Failed to register !!"+err);
+				});
+			
+		});
+		return promise;
+	}
 }
 export default restClient;
